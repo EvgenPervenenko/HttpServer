@@ -1,0 +1,42 @@
+#include "Connection.h"
+#include <QDateTime>
+#include <QTextCodec>
+#include <QFile>
+
+Connection::Connection() :
+  _ip( QHostAddress::Any )
+, _port( 80 )
+, _serverStatus( 0 )
+{
+  _server = QSharedPointer<QTcpServer>::create();
+  connect( _server.data(), SIGNAL( newConnection() ), this, SLOT( NewUser() ) );
+  
+  if ( !_server->listen(QHostAddress::Any, _port) && _serverStatus == 0 )
+    qDebug() <<  QObject::tr("Unable to start the server: %1.").arg(_server->errorString());
+  else
+    {
+      _serverStatus = 1;
+      qDebug() << "TCPSocket listen on port : " << _port;
+      qDebug() << "Server started";
+    }
+}
+
+Connection::~Connection()
+{}
+
+void Connection::NewUser()
+{
+  if( _serverStatus == 1 )
+    {
+      qDebug() << "New connection!";
+      QTcpSocket* clientSocket = _server->nextPendingConnection();
+      int id = clientSocket->socketDescriptor();
+      _clients.insert( id, clientSocket );
+      
+      auto runTcpConnectionPrivate = [&]()
+      {
+          
+      };
+    }
+}
+
