@@ -1,8 +1,6 @@
 #include "TCPConnection.h"
 #include "TCPConnectionPrivate.h"
-#include <QtConcurrent/QtConcurrent>
-#include <QThreadPool>
-#include <QApplication>
+#include "ThreadManager.h"
 
 TCPConnection::TCPConnection() :
   _ip( QHostAddress::Any )
@@ -17,20 +15,25 @@ TCPConnection::TCPConnection() :
       qDebug() << "TCPSocket listen on port : " << _port;
       qDebug() << "Server started";
     }
+  
+  _threadManager = new ThreadManager( this );
 }
 
 TCPConnection::~TCPConnection()
-{
-}
+{}
 
 void TCPConnection::incomingConnection(qintptr handle)
 {
   qDebug() << "New connection!";
   auto *connection = new TcpConnectionPrivate( handle );
-  QThread *thread = new QThread(connection);
+  QThread *thread = _threadManager->GetThread();
   connection->moveToThread( thread );
-  connect(thread, SIGNAL( started() ), connection, SLOT( run() ));
   _clients.push_back( connection );
-  thread->start();
+  
+  connect( connection, &TcpConnectionPrivate::SocketClosed, 
+           _threadManager, &ThreadManager::SocketClosed );
+  
+  QMetaObject::invokeMethod(connection,
+  "Run",
+  Qt::QueuedConnection);
 }
-

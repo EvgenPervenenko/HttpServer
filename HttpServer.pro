@@ -11,11 +11,13 @@ SOURCES += main.cpp \
     HttpServer.cpp \
     TCPConnection.cpp \
     TCPConnectionPrivate.cpp \
-    tcpprocessor.cpp
+    ThreadManager.cpp \
+    TCPProcessor.cpp
 
 HEADERS += \
     HttpServer.h \
     TCPConnection.h \
     TCPConnectionPrivate.h \
-    tcpprocessor.h
+    ThreadManager.h \
+    TCPProcessor.h
 

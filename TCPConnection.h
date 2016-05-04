@@ -10,6 +10,7 @@
 #include <QThreadPool>
 
 class TcpConnectionPrivate;
+class ThreadManager;
 
 class TCPConnection : public QTcpServer
 {
@@ -29,6 +30,9 @@ private:
 	QHostAddress _ip;
 	quint16 _port;
 	quint8 _serverStatus;
+	ThreadManager *_threadManager;
+	QMap<int, QThread *> _threadPool;
+	
 };
 
 #endif // CONNECTION_H

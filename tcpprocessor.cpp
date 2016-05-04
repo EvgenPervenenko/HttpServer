@@ -1,4 +1,4 @@
-#include "tcpprocessor.h"
+#include "TCPProcessor.h"
 #include <QTextStream>
 #include <QFile>
 #include <QDateTime>
@@ -6,7 +6,7 @@
 #include <QTimerEvent>
 #include <QUuid>
 
-static const int TimeOut = 30000;
+static const int TimeOut = 25000;
 
 TCPProcessor::TCPProcessor(QTcpSocket *socket,
                            std::function<void ()> timeOutCallbackFunction,
@@ -80,12 +80,12 @@ void TCPProcessor::timerEvent(QTimerEvent *event)
 
 void TCPProcessor::ProcessData( const QByteArray &data )
 {
-  QFile file( _fileName + ".txt" );
+  QFile file( _fileName + ".bin" );
   if ( !file.open( QIODevice::WriteOnly | QIODevice::Append ) )
     qDebug() << "File not opened!";
   else
     {
-      file.write( data );
+      file.write( QByteArray::fromBase64( data ) );
       file.close();
     }
 }

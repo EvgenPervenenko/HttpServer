@@ -17,16 +17,19 @@ public:
 
 Q_SIGNALS:
   void TimeOut();
+  void SocketClosed( QThread * );
+  
+public Q_SLOTS:
+  Q_INVOKABLE void Run();
 
 private Q_SLOTS:
-  void run();
   void ReadyRead();
   void ProcessTimeOut();
+  void Disconnected();
 
 private:
   QTcpSocket *_socket;
   QSharedPointer<TCPProcessor> _processor;
   qintptr _socketDescriptor;
   bool _isTimeOut;
-
 };
