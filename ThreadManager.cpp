@@ -25,7 +25,6 @@ QThread *ThreadManager::GetThread()
 	++firstKey;
 	_threadPool.insertMulti( firstKey, firstThread );
 	
-	qDebug() << _threadPool.keys();
 	return firstThread;
 }
 
@@ -35,6 +34,5 @@ void ThreadManager::SocketClosed(QThread *thread)
 	_threadPool.remove( key );
 	--key;
 	_threadPool.insert( key, thread );
-	qDebug() << _threadPool.keys();
 }
 
